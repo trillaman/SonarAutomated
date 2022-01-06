@@ -1,0 +1,2 @@
+https://downloads.wordpress.org/plugin/health-check.1.4.5.zip
+https://downloads.wordpress.org/plugin/bbpress.2.6.9.zip
