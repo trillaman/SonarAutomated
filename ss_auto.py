@@ -1,16 +1,20 @@
-#ERRORED 
-#sh: 1: Syntax error: "(" unexpected
-#sh: 1: Syntax error: "(" unexpected
-
-
 import os
 import re
 import time
 from dotenv import load_dotenv
 import requests
 import time
-
+import path
 from bs4 import BeautifulSoup
+
+# PRE CHECKS
+if path.exists('wp-plugins-downloaded') is False:
+        os.system("mkdir wp-plugins-downloaded")
+
+if path.exists('wp-plugins-extracted') is False:
+        os.system("mkdir wp-plugins-extracted")
+
+load_dotenv()
 
 # SCRAPING WORDPRESS PLUGINS PAGE
 URL = "https://pl.wordpress.org/plugins/browse/blocks/"  # main plugins site
@@ -39,9 +43,10 @@ for child_a in h3:  # this loop is for getting plugin names and urls to plugin s
         print(plugins[i])
         print(plugins_urls[i])
         i +=1 
+        time.sleep(1)
 
 
-# NOW GO THROUGH PLUGINS_URLS TO GET ZIP LINK
+# NOW GO THROUGH PLUGINS SITES TO GET ZIP LINK
 
 for i in range(len(plugins)):  # for every plugin
         plugin_url = plugins_urls[i]  # we get this url
@@ -52,41 +57,28 @@ for i in range(len(plugins)):  # for every plugin
         zip_href = plugins_zip_url[0]['href'] # and here we got clear href
         plugins_zips.append(plugins_zip_url[0]['href'])
 
-        #SONAR PART
+        time.sleep(1)
 
-        time.sleep(5)
+# Downloading zips
 
-#print(plugins_zips)
-# END STEP
+index = 0
+
+for el in plugins_zips:
+        curl_cmd = "curl --output ./wp-plugins-downloaded/" + plugins[index] + " --url " + el[0]
+        
+        curl_cmd = str(curl_cmd)
+        os.system(curl_cmd)
+        print("Downloaded " + plugins[index])
+
+        unzip_cmd = "unzip -d ./wp-plugins-extracted/ ./wp-plugins-downloaded/" + plugins[index]
+        os.system(unzip_cmd)
+        print("Plugin " + plugins[index] + " unzipped")
+
+        index += 1
 
 
-load_dotenv()
+# Creating sonar-scanner.properties for each folder
 
-# SONAR PART
-# STEP 1 - Downloading zips
-file = open("list_to_scan.txt", "r")
-for line in file:
-        try:
-                url = line
-                #print(url)
-                zip_file_name = re.search(r"(^https://downloads.wordpress.org/plugin/)([\w+.-]+.zip)", url)
-
-                #print(zip_file_name[2])
-                os.system("mkdir wp-plugins-downloaded")
-                os.system("mkdir wp-plugins-extracted")
-                curl_cmd = "curl --output ./wp-plugins-downloaded/" + zip_file_name[2] + " --url " + url
-                curl_cmd = str(curl_cmd)
-                #print(curl_cmd)
-                os.system(curl_cmd)
-                #time.sleep(3)
-                unzip_cmd = "unzip -d ./wp-plugins-extracted/ ./wp-plugins-downloaded/" + zip_file_name[2]
-                os.system(unzip_cmd)
-
-        except Exception as ex:
-                print(ex)
-'''
-# STEP 2 - creating sonar-scanner.properties for each folder
-'''
 os.system("find ./wp-plugins-extracted -maxdepth 1 -type d | grep 'wp-plugins-extracted/' > ./wp-plugins-extracted/list_of_folders.txt")
 
 file_with_list = open("./wp-plugins-extracted/list_of_folders.txt", "r")
@@ -100,13 +92,16 @@ for l in file_with_list:
         file_sonar_properties.write("sonar.projectName=" + str(project[2]) + "\n")
         file_sonar_properties.close()
 
-        # STEP 3 - docker part
+        # Docker part
         project_path = "./wp-plugins-extracted/" + str(project[2])
         project_name = str(project[2])
         docker_cmd = str("echo os.environ('SUDO_PASS') | sudo -S docker run --rm -e SONAR_HOST_URL='os.environ('SONNAR_URL')' -e SONAR_LOGIN='os.environ('SONNAR_LOGIN')' -v " + project_path + ":/usr/src sonarsource/sonar-scanner-cli -Dsonar.projectBaseDir=" + project_path + " -Dsonar.projectKey=" + project_name)
         os.system(docker_cmd)
 
 # STEP 4 - close files        
-file.close()
 file_with_list.close()
-'''
+
+
+# SHIT THAT LEFT
+# re.search(r"(^https://downloads.wordpress.org/plugin/)([\w+.-]+.zip)", url)
+# file = open("list_to_scan.txt", "r") # to replace with array
