@@ -4,14 +4,16 @@ import time
 from dotenv import load_dotenv
 import requests
 import time
-import path
+import pathlib
 from bs4 import BeautifulSoup
 
 # PRE CHECKS
-if path.exists('wp-plugins-downloaded') is False:
+folder = pathlib.Path("./wp-plugins-downloaded")
+if folder.exists() is False:
         os.system("mkdir wp-plugins-downloaded")
 
-if path.exists('wp-plugins-extracted') is False:
+folder = pathlib.Path("wp-plugins-extracted")
+if folder.exists() is False:
         os.system("mkdir wp-plugins-extracted")
 
 load_dotenv()
@@ -56,7 +58,7 @@ for i in range(len(plugins)):  # for every plugin
         plugins_zip_url = soup.findAll('a', {'class': 'plugin-download'})  # here we are exrtracting download link to plugin which is leading to zip file
         zip_href = plugins_zip_url[0]['href'] # and here we got clear href
         plugins_zips.append(plugins_zip_url[0]['href'])
-
+        print(str(plugins_zip_url[0]['href']) + " added to array")
         time.sleep(1)
 
 # Downloading zips
@@ -64,12 +66,13 @@ for i in range(len(plugins)):  # for every plugin
 index = 0
 
 for el in plugins_zips:
-        curl_cmd = "curl --output ./wp-plugins-downloaded/" + plugins[index] + " --url " + el[0]
-        
+        print("Downloading " + plugins[index])
+        curl_cmd = "curl --output ./wp-plugins-downloaded/" + plugins[index] + " --url " + el
         curl_cmd = str(curl_cmd)
         os.system(curl_cmd)
         print("Downloaded " + plugins[index])
 
+        print("Unzipping " + plugins[index])
         unzip_cmd = "unzip -d ./wp-plugins-extracted/ ./wp-plugins-downloaded/" + plugins[index]
         os.system(unzip_cmd)
         print("Plugin " + plugins[index] + " unzipped")
@@ -83,6 +86,8 @@ os.system("find ./wp-plugins-extracted -maxdepth 1 -type d | grep 'wp-plugins-ex
 
 file_with_list = open("./wp-plugins-extracted/list_of_folders.txt", "r")
 
+index = 0
+
 for l in file_with_list:
         line = l.rstrip("\n")
         project = re.search(r"^(./wp-plugins-extracted/)([\w+.-]+)", line)
@@ -93,9 +98,10 @@ for l in file_with_list:
         file_sonar_properties.close()
 
         # Docker part
-        project_path = "./wp-plugins-extracted/" + str(project[2])
+        project_path = str(os.getenv('EXTRACTED_DIR')) + "wp-plugins-extracted/" + str(project[2])
         project_name = str(project[2])
-        docker_cmd = str("echo os.environ('SUDO_PASS') | sudo -S docker run --rm -e SONAR_HOST_URL='os.environ('SONNAR_URL')' -e SONAR_LOGIN='os.environ('SONNAR_LOGIN')' -v " + project_path + ":/usr/src sonarsource/sonar-scanner-cli -Dsonar.projectBaseDir=" + project_path + " -Dsonar.projectKey=" + project_name)
+        docker_cmd = str("echo " + str(os.getenv('SUDO_PASS')) + " | sudo -s docker run --rm -e SONAR_HOST_URL=" + str(os.getenv('SONNAR_URL')) + " -e SONAR_LOGIN=" + str(os.getenv('SONNAR_LOGIN')) + " -v " + "\"" + str(project_path) + ":/usr/src" + "\"" + " sonarsource/sonar-scanner-cli -Dsonar.projectBaseDir=" +  "\"" +project_path + "\"" + " -Dsonar.projectKey=" + project_name)
+        print(docker_cmd)
         os.system(docker_cmd)
 
 # STEP 4 - close files        
