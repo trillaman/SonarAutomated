@@ -7,6 +7,33 @@ import os
 import re
 import time
 from dotenv import load_dotenv
+import requests
+
+from bs4 import BeautifulSoup
+
+# SCRAPING WORDPRESS PLUGINS PAGE
+URL = "https://pl.wordpress.org/plugins/browse/blocks/"
+page = requests.get(URL)
+
+plugins = []
+plugins_urls = []
+
+class_list = set()
+
+soup = BeautifulSoup( page.content , 'html.parser')
+
+tags = {tag.name for tag in soup.find_all()}
+
+
+h3 = soup.findAll('h3', {'class': 'entry-title'})
+for child_a in h3:
+        children = child_a.findChildren("a" , recursive=False)
+        print(children[0]['href'])
+        plugins_urls.append(children[0]['href'])
+
+# NOW GO THROUGH PLUGINS_URLS TO GET ZIP LINK
+# TO DO
+
 
 load_dotenv()
 
