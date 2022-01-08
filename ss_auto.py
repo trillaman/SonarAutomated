@@ -100,7 +100,11 @@ for l in file_with_list:
         # Docker part
         project_path = str(os.getenv('EXTRACTED_DIR')) + "wp-plugins-extracted/" + str(project[2])
         project_name = str(project[2])
-        docker_cmd = str("echo " + str(os.getenv('SUDO_PASS')) + " | sudo -s docker run --rm -e SONAR_HOST_URL=" + str(os.getenv('SONNAR_URL')) + " -e SONAR_LOGIN=" + str(os.getenv('SONNAR_LOGIN')) + " -v " + "\"" + str(project_path) + ":/usr/src" + "\"" + " sonarsource/sonar-scanner-cli -Dsonar.projectBaseDir=" +  "\"" +project_path + "\"" + " -Dsonar.projectKey=" + project_name)
+        sonar_url = os.getenv('SONAR_URL')
+        sudo_pass = os.getenv('SUDO_PASS')
+        sonar_token = os.getenv('SONAR_TOKEN')
+
+        docker_cmd = "echo "+ sudo_pass + " | sudo -s docker run --rm -e SONAR_HOST_URL=" + str(sonar_url) + " -e SONAR_LOGIN=" + str(sonar_token) + " -v " + project_path + ":/usr/src" + " sonarsource/sonar-scanner-cli -Dsonar.projectName=" + project_name + " -Dsonar.projectKey=" + project_name + " -Dproject.settings=" + project_path + "/sonar-project.properties" # RIGHT PATH EXECUTED FROM PROJECT FOLDER
         print(docker_cmd)
         os.system(docker_cmd)
 
