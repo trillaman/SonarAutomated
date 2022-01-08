@@ -10,6 +10,7 @@ Currently it's based on:
 * os functions like curl, unzip and grep - so it's mostly designed for linux systems for now
 ### How to use
 1. Create .env file with following fields: 
+
 		SONNAR_URL=(PASTE HERE ADDRESS TO SONAR SCANNER with port :9000)
 		SONNAR_LOGIN=your sonar token here
 		SUDO_PASS=root user pass on linux
