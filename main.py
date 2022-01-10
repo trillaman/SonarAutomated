@@ -20,9 +20,9 @@ def main():
         file_extension = m_helper.get_file_by_extension(file_to_scan)
         if file_extension == "zip":
             m_helper.unzip_file(file_to_scan) # TO DO REST
-
+        # TODO GET A PATH OF JUST UNZIPPED FILES TO SCAN WITHOUT SCANNING WHOLE UNZIPPED FOLDER
         sonar = SonarModule
-        sonar.run_docker_scan(file_to_scan)
+        sonar.run_docker_scan(os.getcwd() + "/unzipped")
 
 
 if __name__ == "__main__":

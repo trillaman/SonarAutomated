@@ -21,3 +21,13 @@ class MainHelper:
             print("File " + file + " unzipped")
 
         return True
+
+    def set_slashes(self, path):
+        if os.platform.system() == 'Windows':
+            path2 = path.replace("/", "\\")
+            return path2
+        elif os.platform.system() == 'Linux':
+            return path
+        else:
+            print("Unknown platform")
+            return path

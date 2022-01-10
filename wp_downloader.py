@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import sys
-
+from main_helper import MainHelper
 
 class WP_Plugin_Downloader:
     URL = "https://pl.wordpress.org/plugins/browse/blocks/"  # main plugins site
@@ -15,6 +15,8 @@ class WP_Plugin_Downloader:
     plugins_urls = []  # for storing plugin urls
     plugins_zips = []  # for storing plugins zip urls
 
+    m_helper = MainHelper
+
     soup = BeautifulSoup(page.content, 'html.parser')  # here we are parsing this
     tags = {tag.name for tag in soup.find_all()}  # and selecting all tags
     h3 = soup.findAll('h3', {
@@ -24,18 +26,23 @@ class WP_Plugin_Downloader:
         self.check_wp_folders()
 
     def check_wp_folders(self):
+        path = os.getcwd() + "/wp-plugins-downloaded"
+        path = self.m_helper.set_slashes(path)
 
-        if pathlib.Path("./wp-plugins-downloaded").exists() is False:
+        if pathlib.Path(path).exists() is False:
             try:
-                os.system("mkdir wp-plugins-downloaded")
+                os.system("mkdir " + path)
                 print("Folder wp-plugins-downloaded created")
             except Exception:
                 print("Can't create folder wp-plugins-downloaded")
                 sys.exit()
 
-        if pathlib.Path("./wp-plugins-extracted").exists() is False:
+        path = os.getcwd() + "/wp-plugins-extracted"
+        path = self.m_helper.set_slashes(path)
+
+        if pathlib.Path(path).exists() is False:
             try:
-                os.system("mkdir wp-plugins-extracted")
+                os.system("mkdir " + path)
                 print("Folder wp-plugins-extracted created")
             except Exception:
                 print("Can't create folder wp-plugins-extracted")
@@ -85,7 +92,7 @@ class WP_Plugin_Downloader:
 
         for el in self.plugins_zips:
             print("Downloading " + self.plugins[index])
-            curl_cmd = "curl --output ./wp-plugins-downloaded/" + self.plugins[index] + " --url " + el
+            curl_cmd = "curl --output " + self.m_helper.set_slashes( str(os.getcwd()) + "/wp-plugins-downloaded") + self.plugins[index] + " --url " + el
             curl_cmd = str(curl_cmd)
             os.system(curl_cmd)
             print("Downloaded " + self.plugins[index])
