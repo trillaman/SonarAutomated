@@ -20,6 +20,9 @@ class WP_Plugin_Downloader:
     h3 = soup.findAll('h3', {
         'class': 'entry-title'})  # in those tags we are looking for h3 entry title which means name of the plugin
 
+    def __init__(self):
+        self.check_wp_folders()
+
     def check_wp_folders(self):
 
         if pathlib.Path("./wp-plugins-downloaded").exists() is False:
@@ -98,10 +101,9 @@ class WP_Plugin_Downloader:
 
     def create_list_of_folders(self):
         try:
-            os.system(
-                "find ./wp-plugins-extracted -maxdepth 1 -type d | grep 'wp-plugins-extracted/' > ./wp-plugins-extracted/list_of_folders.txt")
-            sys.exit()
+            os.system("find ./wp-plugins-extracted -maxdepth 1 -type d | grep 'wp-plugins-extracted/' > ./wp-plugins-extracted/list_of_folders.txt")
         except Exception:
             print("Failed to create list_of_folders.txt")
+            sys.exit()
 
         return True
