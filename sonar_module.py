@@ -46,7 +46,7 @@ class SonarModule:
 
         pfile.close()
 
-    def run_docker_scan(self, path, project_name):
+    def run_docker_scan(self, path):
         proj = self.get_project_name(path)
         project_path =  str(self.extracted_dir) + "/" + str(proj[2])
         project_name = str(proj[2])
@@ -60,6 +60,6 @@ class SonarModule:
         os.system(docker_cmd)
 
     def run(self, file):
-        self.run_docker_scan()
+        self.run_docker_scan(file)
 
 
