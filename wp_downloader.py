@@ -93,12 +93,14 @@ class WP_Plugin_Downloader:
         for el in self.plugins_zips:
             print("Downloading " + self.plugins[index])
             curl_cmd = "curl --output " + self.m_helper.set_slashes( str(os.getcwd()) + "/wp-plugins-downloaded") + self.plugins[index] + " --url " + el
+            curl_cmd = self.m_helper.set_slashes(curl_cmd)
             curl_cmd = str(curl_cmd)
             os.system(curl_cmd)
             print("Downloaded " + self.plugins[index])
 
             print("Unzipping " + self.plugins[index])
             unzip_cmd = "unzip -d ./wp-plugins-extracted/ ./wp-plugins-downloaded/" + self.plugins[index]
+            unzip_cmd = self.m_helper.set_slashes(unzip_cmd)
             os.system(unzip_cmd)
             print("Plugin " + self.plugins[index] + " unzipped")
 
@@ -107,8 +109,15 @@ class WP_Plugin_Downloader:
         return True
 
     def create_list_of_folders(self):
+        if os.platform.system() == 'Windows':
+            dir_cmd = "dir /a:d /b " + os.getcwd() + "/wp-plugins-extracted" + " > " + os.getcwd()  +"/list_of_folders.txt"
+        else:
+            dir_cmd = "find ./wp-plugins-extracted -maxdepth 1 -type d | grep 'wp-plugins-extracted/' > ./wp-plugins-extracted/list_of_folders.txt"
+
+        dir_cmd = self.m_helper.set_slashes(dir_cmd)
+
         try:
-            os.system("find ./wp-plugins-extracted -maxdepth 1 -type d | grep 'wp-plugins-extracted/' > ./wp-plugins-extracted/list_of_folders.txt")
+            os.system(dir_cmd)
         except Exception:
             print("Failed to create list_of_folders.txt")
             sys.exit()

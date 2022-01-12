@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 class MainHelper:
     # TODO DEFINE TYPE OF FILE TO SCAN eg. if zip then unzip first
     def get_file_by_extension(self, file):
-        split_tup = os.path.splitext('my_file.txt')
+        split_tup = os.path.splitext(file)
         file_extension = split_tup[1]
 
         return file_extension
