@@ -11,6 +11,13 @@ class MainHelper:
 
         return file_extension
 
+    def get_filename(self, filepath):
+        split_tup = filepath.split("/")
+        for i in range(len(split_tup)):
+            filename = split_tup[-1]
+        filename = filename.split(".")
+        return filename[0]
+
     def unzip_file(self, file):
         unzip_cmd = "unzip -d " + os.getcwd() + "/unzipped " + file
         try:

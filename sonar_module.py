@@ -32,6 +32,7 @@ class SonarModule:
             print("Error while writing sonar properties file for project: " + p_name)
         finally:
             file_sonar_properties.close()
+        return True
 
     def get_project_name(self, line):
         project = re.search(r"^(./wp-plugins-extracted/)([\w+.-]+)", line)
@@ -46,20 +47,24 @@ class SonarModule:
 
         pfile.close()
 
-    def run_docker_scan(self, path):
-        proj = self.get_project_name(path)
-        project_path =  str(self.extracted_dir) + "/" + str(proj[2])
-        project_name = str(proj[2])
+    def run_docker_scan(self, path, project_name):
+        #proj = self.get_project_name(path)
+        #project_path =  str(self.extracted_dir) + "/" + str(proj[2])
+        #project_name = str(proj[2])
         sonar_url = self.sonar_url
         sudo_pass = self.sudo_pass
         sonar_token = self.sonar_token
         docker_cmd = "echo " + sudo_pass + " | sudo -s docker run --rm -e SONAR_HOST_URL=" + str(
             sonar_url) + " -e SONAR_LOGIN=" + str(
-            sonar_token) + " -v " + project_path + ":/usr/src" + " sonarsource/sonar-scanner-cli -Dsonar.projectName=" + project_name + " -Dsonar.projectKey=" + project_name + " -Dproject.settings=" + project_path + "/sonar-project.properties"  # RIGHT PATH EXECUTED FROM PROJECT FOLDER
+            sonar_token) + " -v " + path + ":/usr/src" + " sonarsource/sonar-scanner-cli -Dsonar.projectName=" + project_name + " -Dsonar.projectKey=" + project_name + " -Dproject.settings=" + path + "/sonar-project.properties"  # RIGHT PATH EXECUTED FROM PROJECT FOLDER
         print(docker_cmd)
-        os.system(docker_cmd)
+        try:
+            os.system(docker_cmd)
+        except Exception:
+            print("Error while running sonar docker")
+            sys.exit()
+        finally:
+            return True
 
-    def run(self, file):
-        self.run_docker_scan(file)
 
 
