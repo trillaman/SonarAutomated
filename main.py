@@ -1,24 +1,25 @@
 import argparse
 from sonar_module import SonarModule
-from main_helper import MainHelper
-import pathlib
+from main_helper import *
 import os
 import sys
+from dotenv import load_dotenv
 
-m_helper = MainHelper
+load_dotenv()
 
 def init_check():
-    path = os.getcwd() + "/unzipped"
-    path = m_helper.set_slashes(path)
-    if pathlib.Path.exists(path) is False:
+    path_to_unzipped = str(os.getenv('WORKING_DIR') + "/unzipped")
+    path_to_unzipped = set_slashes(path_to_unzipped)
+    if not os.path.exists(path_to_unzipped):
         try:
-            os.system("mkdir " + path)
+            os.system("mkdir " + path_to_unzipped)
             print("Folder unzipped created")
             result = True
         except Exception:
             print("Can't create folder unzipped in that location " + os.getcwd())
             sys.exit()
     return result
+
 
 def main():
     parser = argparse.ArgumentParser(description='Scan some files')
@@ -29,22 +30,21 @@ def main():
     args = parser.parse_args()
     argsdict = vars(args)
 
-    if argsdict['file']  is not None:
+    if argsdict['file'] is not None:
         file_to_scan = argsdict['file']
 
     if argsdict['name'] is not None:
         project_name = argsdict['name']
     else:
-        project_name = m_helper.get_filename(argsdict['file'])
+        project_name = get_filename(argsdict['file'])
 
-    file_extension = m_helper.get_file_by_extension(file_to_scan)
+    file_extension = get_file_extension(file_to_scan)
 
     if file_extension == "zip":
-        m_helper.unzip_file(file_to_scan)  # TO DO REST
+        unzip_file(file_to_scan)  # TO DO REST
 
-    directory_with_project = os.chdir(argsdict['file'])
+    directory_with_project = os.path.abspath(argsdict['file'])
     print(os.path.abspath(argsdict['file']))
-
 
     if argsdict['S']:
         # TODO GET A PATH OF JUST UNZIPPED FILES TO SCAN WITHOUT SCANNING WHOLE UNZIPPED FOLDER
@@ -52,15 +52,10 @@ def main():
         sonar.write_properties_file(directory_with_project, project_name)
         sonar.run_docker_scan(directory_with_project, project_name)
 
-    if file_extension == 'php':
-
-
-
 
 if __name__ == "__main__":
     init_check()
     main()
-
 
 # SHIT THAT LEFT
 # re.search(r"(^https://downloads.wordpress.org/plugin/)([\w+.-]+.zip)", url)
