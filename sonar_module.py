@@ -26,14 +26,20 @@ class SonarModule:
     # CALLABLE BY FUNCTION
     def write_properties_file(self, p_path, p_name):
         try:
-            file_sonar_properties = open(p_path + "/sonar-scanner.properties",
+            os.system("mkdir ./unzipped/" + p_name)
+        except Exception:
+            print("Error while creating folder for project")
+
+        try:
+            file_sonar_properties = open("./unzipped/" + p_name + "/sonar-scanner.properties",
                                          "w")  # opening file to write properties for each project
             file_sonar_properties.write("sonar.projectKey=" + p_name + "\n")
+            file_sonar_properties.write("sonar.sources=" + os.getenv('WORKING_DIR') + "/unzipped/" + p_name + "/" + "\n")
             file_sonar_properties.write("sonar.projectName=" + p_name + "\n")
+            file_sonar_properties.close()
         except Exception:
             print("Error while writing sonar properties file for project: " + p_name)
-        finally:
-            file_sonar_properties.close()
+
         return True
 
     '''
@@ -53,16 +59,14 @@ class SonarModule:
 
         pfile.close()
 
-    def run_docker_scan(self, path, project_name):
-        # proj = self.get_project_name(path)
-        # project_path =  str(self.extracted_dir) + "/" + str(proj[2])
-        # project_name = str(proj[2])
+    def run_docker_scan(self, path, p_name):
         sonar_url = self.sonar_url
         sudo_pass = self.sudo_pass
         sonar_token = self.sonar_token
-        docker_cmd = "echo " + sudo_pass + " | sudo -s docker run --rm -e SONAR_HOST_URL=" + str(
-            sonar_url) + " -e SONAR_LOGIN=" + str(
-            sonar_token) + " -v " + path + ":/usr/src" + " sonarsource/sonar-scanner-cli -Dproject.settings=" + path + "/sonar-project.properties"  # RIGHT PATH EXECUTED FROM PROJECT FOLDER
+        docker_cmd = "echo " + sudo_pass + " | sudo -s docker run --rm -e SONAR_HOST_URL=" + "\"" + str(
+            sonar_url) + "\"" + " -e SONAR_LOGIN=" + "\"" + str(
+            sonar_token) + "\"" + " -v " + "\"" + os.getenv('WORKING_DIR') + "/unzipped/" + p_name + ":/usr/src" + "\"" + " sonarsource/sonar-scanner-cli -Dsonar.projectKey=" + p_name + " -Dsonar.projectName=" + p_name  # RIGHT PATH EXECUTED FROM PROJECT FOLDER
+        #" -Dproject.settings=" + os.getenv('WORKING_DIR') + "/unzipped/" + p_name+ "/sonar-scanner.properties"
         print(docker_cmd)
         try:
             os.system(docker_cmd)
