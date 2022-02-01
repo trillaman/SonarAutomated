@@ -54,14 +54,12 @@ class SonarModule:
 
         pfile.close()
 
-    def run_docker_scan(self, path, p_name):
+    def run_docker_scan(self, p_dir, p_name):
         sonar_url = self.sonar_url
         sudo_pass = self.sudo_pass
         sonar_token = self.sonar_token
         docker_cmd = "echo " + sudo_pass + " | sudo -s docker run --rm -e SONAR_HOST_URL=" + "\"" + str(
-            sonar_url) + "\"" + " -e SONAR_LOGIN=" + "\"" + str(
-            sonar_token) + "\"" + " -v " + "\"" + os.getenv('WORKING_DIR') + "/unzipped/" + p_name + ":/usr/src" + "\"" + " sonarsource/sonar-scanner-cli -Dsonar.projectKey=" + p_name + " -Dsonar.projectName=" + p_name  # RIGHT PATH EXECUTED FROM PROJECT FOLDER
-        #" -Dproject.settings=" + os.getenv('WORKING_DIR') + "/unzipped/" + p_name+ "/sonar-scanner.properties"
+            sonar_url) + "\"" + " -e SONAR_LOGIN=" + "\"" + str(sonar_token) + "\"" + " -v " + "\"" + p_dir + ":/usr/src" + "\"" + " sonarsource/sonar-scanner-cli -Dsonar.projectKey=" + p_name + " -Dsonar.projectName=" + p_name
         print(docker_cmd)
         try:
             os.system(docker_cmd)
