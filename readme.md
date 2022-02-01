@@ -1,4 +1,4 @@
-# Sonar Automated
+# StaticScanning Wrapper
 
 ***
 
@@ -23,10 +23,12 @@ Currently it's based on:
    	SUDO_PASS=root user pass on linux
 
 2. Start Docker backend with instructions from sonar page and then use command like:
-   sudo docker run -d --name sonarqube -p 9000:9000 -v sonarqube_data:/opt/sonarqube/data -v sonarqube_extensions:
-   /opt/sonarqube/extensions -v sonarqube_logs:/opt/sonarqube/logs
+   sudo docker-compose up
 
 3. Run python script It's important to create docker volumes earlier to make data persistent after stopping docker
    container. Results will be visible after starting as well as login to sonar panel dashboard wil work This project is
    still under extending as well as fixing current bugs so please don't be mad if something will not work "just like
    that". Instead of this let me know what I can fix/add as functionality. Thanks!
+
+
+      python3 main.py --file example.php -S S --name example

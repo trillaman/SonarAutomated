@@ -26,7 +26,8 @@ class SonarModule:
     # CALLABLE BY FUNCTION
     def write_properties_file(self, p_path, p_name):
         try:
-            os.system("mkdir ./unzipped/" + p_name)
+            command = "mkdir " + p_path +  p_name
+            os.system(command)
         except Exception:
             print("Error while creating folder for project")
 

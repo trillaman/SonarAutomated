@@ -28,8 +28,6 @@ def set_slashes(path):
         return path
     return str(path)
 
-    # TODO DEFINE TYPE OF FILE TO SCAN eg. if zip then unzip first
-
 
 def get_file_extension(filepath):
     filep = set_slashes(filepath)
@@ -44,13 +42,13 @@ def get_file_extension(filepath):
 
 
 # CANT BE TESTED YET ON WINDOWS
-def unzip_file(self, file):
-    unzip_cmd = "unzip -d " + os.getcwd() + "/unzipped " + file
+def unzip_file(self, project_folder, file_to_unzip):
+    unzip_cmd = "unzip -d " + project_folder + " " + file_to_unzip
     try:
         os.system(unzip_cmd)
     except Exception:
-        print("Couldn't unzip file" + file)
+        print("Couldn't unzip file" + file_to_unzip + " to " + project_folder)
     finally:
-        print("File " + file + " unzipped")
+        print("File " + file_to_unzip + " unzipped")
 
     return True
