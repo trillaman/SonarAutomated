@@ -31,6 +31,7 @@ def main():
     parser = argparse.ArgumentParser(description='Scan some files')
     parser.add_argument('--file', help='File to scan (php or zip)', required=True)
     parser.add_argument('-S', help='Use Sonar scanner', required=False)
+    parser.add_argument('-P', help='Use Psalm scanner', required=False)
     parser.add_argument('--name', help='Give Project Name', required=False)
 
     args = parser.parse_args()
@@ -71,6 +72,8 @@ def main():
         sonar.write_properties_file(project_dir, project_name)  # Creating file with properties for Sonar
         sonar.run_docker_scan(project_dir, project_name)  # Sonar scanning run
 
+    if argsdict['P'] is not None:
+        os.system(os.getenv('PSALM_BIN') + "/psalm.phar --taint-analysis " + project_dir)
 
 if __name__ == "__main__":
     init_check()
