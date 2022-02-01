@@ -1,6 +1,6 @@
 import os
 import platform
-from main_helper import *
+
 
 def get_proper_slashes():
     if platform.system() == 'Windows':
@@ -41,6 +41,7 @@ def get_file_extension(filepath):
     filename = split_tup[-1]
     ext = filename.split(".")
     return ext[1]
+
 
 # CANT BE TESTED YET ON WINDOWS
 def unzip_file(self, file):

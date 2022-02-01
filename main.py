@@ -31,7 +31,7 @@ def main():
     project_name = ""
     args = parser.parse_args()
     argsdict = vars(args)
-
+    file_to_scan = ""
     if argsdict['file'] is not None:
         file_to_scan = argsdict['file']
 

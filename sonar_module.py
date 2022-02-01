@@ -1,8 +1,8 @@
 import os
-import re
 import sys
+
 from dotenv import load_dotenv
-from main_helper import get_proper_slashes
+
 
 class SonarModule:
 

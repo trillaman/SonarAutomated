@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import sys
-from main_helper import MainHelper
+from main_helper import *
 
 
 class WP_Plugin_Downloader:
@@ -12,11 +12,10 @@ class WP_Plugin_Downloader:
 
     page = requests.get(URL)  # we are downloading all html from first page
 
+
     plugins = []  # for storing plugins names
     plugins_urls = []  # for storing plugin urls
     plugins_zips = []  # for storing plugins zip urls
-
-    m_helper = MainHelper
 
     soup = BeautifulSoup(page.content, 'html.parser')  # here we are parsing this
     tags = {tag.name for tag in soup.find_all()}  # and selecting all tags
@@ -28,7 +27,7 @@ class WP_Plugin_Downloader:
 
     def check_wp_folders(self):
         path = os.getcwd() + "/wp-plugins-downloaded"
-        path = self.m_helper.set_slashes(path)
+        path = set_slashes(path)
 
         if pathlib.Path(path).exists() is False:
             try:
@@ -39,7 +38,7 @@ class WP_Plugin_Downloader:
                 sys.exit()
 
         path = os.getcwd() + "/wp-plugins-extracted"
-        path = self.m_helper.set_slashes(path)
+        path = set_slashes(path)
 
         if pathlib.Path(path).exists() is False:
             try:
@@ -93,16 +92,16 @@ class WP_Plugin_Downloader:
 
         for el in self.plugins_zips:
             print("Downloading " + self.plugins[index])
-            curl_cmd = "curl --output " + self.m_helper.set_slashes(str(os.getcwd()) + "/wp-plugins-downloaded") + \
+            curl_cmd = "curl --output " + set_slashes(str(os.getcwd()) + "/wp-plugins-downloaded") + \
                        self.plugins[index] + " --url " + el
-            curl_cmd = self.m_helper.set_slashes(curl_cmd)
+            curl_cmd = set_slashes(curl_cmd)
             curl_cmd = str(curl_cmd)
             os.system(curl_cmd)
             print("Downloaded " + self.plugins[index])
 
             print("Unzipping " + self.plugins[index])
             unzip_cmd = "unzip -d ./wp-plugins-extracted/ ./wp-plugins-downloaded/" + self.plugins[index]
-            unzip_cmd = self.m_helper.set_slashes(unzip_cmd)
+            unzip_cmd = set_slashes(unzip_cmd)
             os.system(unzip_cmd)
             print("Plugin " + self.plugins[index] + " unzipped")
 
@@ -116,7 +115,7 @@ class WP_Plugin_Downloader:
         else:
             dir_cmd = "find ./wp-plugins-extracted -maxdepth 1 -type d | grep 'wp-plugins-extracted/' > ./wp-plugins-extracted/list_of_folders.txt"
 
-        dir_cmd = self.m_helper.set_slashes(dir_cmd)
+        dir_cmd = set_slashes(dir_cmd)
 
         try:
             os.system(dir_cmd)

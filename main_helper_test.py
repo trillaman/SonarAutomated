@@ -1,6 +1,5 @@
 import unittest
 from main_helper import *
-from sonar_module import *
 
 
 class TestHelper(unittest.TestCase):
