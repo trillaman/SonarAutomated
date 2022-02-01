@@ -24,18 +24,12 @@ class SonarModule:
         return file_with_list
 
     # CALLABLE BY FUNCTION
-    def write_properties_file(self, p_path, p_name):
+    def write_properties_file(self, p_dir, p_name):
         try:
-            command = "mkdir " + p_path +  p_name
-            os.system(command)
-        except Exception:
-            print("Error while creating folder for project")
-
-        try:
-            file_sonar_properties = open("./unzipped/" + p_name + "/sonar-scanner.properties",
+            file_sonar_properties = open(p_dir + "/sonar-scanner.properties",
                                          "w")  # opening file to write properties for each project
             file_sonar_properties.write("sonar.projectKey=" + p_name + "\n")
-            file_sonar_properties.write("sonar.sources=" + os.getenv('WORKING_DIR') + "/unzipped/" + p_name + "/" + "\n")
+            file_sonar_properties.write("sonar.sources=" + p_dir + "/" + "\n")
             file_sonar_properties.write("sonar.projectName=" + p_name + "\n")
             file_sonar_properties.close()
         except Exception:
@@ -51,7 +45,7 @@ class SonarModule:
         return str(project)
     '''
 
-    def create_properties_for_each(self):
+    def create_properties_for_each(self):  # TO REFACTOR BECAUSE IT DEPENDS ON  ON WP MODULE
         pfile = self.open_file_with_list("./wp-plugins-extracted/list_of_folders.txt")
         for l in pfile:
             line = l.rstrip("\n")
