@@ -73,7 +73,8 @@ def main():
         sonar.run_docker_scan(project_dir, project_name)  # Sonar scanning run
 
     if argsdict['P'] is not None:
-        os.system(os.getenv('PSALM_BIN') + "/psalm.phar --taint-analysis " + project_dir)
+        psalm_cmd = str(os.getenv('PSALM_BIN') + "/psalm.phar --taint-analysis " + project_dir)
+        os.system(psalm_cmd)
 
 if __name__ == "__main__":
     init_check()
