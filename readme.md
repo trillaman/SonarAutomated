@@ -2,17 +2,17 @@
 
 ***
 
-This one is for automated using SonarQube Scanner - currently "working" for wordpress plugin page It's still require
+This tool is for automated using of popular PHP static analysis tool. It's still require
 fixes for fully working and some improvements like watchdog for uploaded files and auto scanning them, but it works as
-alpha version
+very alpha version
 
 ### What's under the hood
 
 Currently it's based on:
 
-* Python with modules like requests, beautiful soup
-* Docker on Linux VM - slashes for directory not changing on system like Windows (todo)
-* os functions like curl, unzip and grep - so it's mostly designed for linux systems for now
+* Python with modules like requests, beautiful soup to scrap wordpress plugins site
+* Docker on Linux VM
+* OS functions like curl, unzip and grep - so it's mostly designed for linux systems for now
 
 ### How to use
 
