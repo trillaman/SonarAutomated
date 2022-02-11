@@ -45,10 +45,9 @@ class PsalmModule:
         return dl
 
     def run_psalm_scan(self, p_dir, p_name):
-        rep_file_path = os.path.abspath(p_dir + "/" + p_name + ".txt")
-        rep_file = check_output_exists(rep_file_path)
+        rep_file_path = p_dir + "/" + p_name + ".txt"
 
-        psalm_cmd = "cd " + p_dir + " && " + " ./vendor/bin/psalm.phar --taint-analysis " + str(p_dir) + " --report=" + str(rep_file_path)  # Focus on security with --taint-analyis
+        psalm_cmd = "cd " + p_dir + " && " + " ./vendor/bin/psalm.phar --taint-analysis " + "--report=" + "example.txt"  # Focus on security with --taint-analyis
 
         try:
             os.system(psalm_cmd)
