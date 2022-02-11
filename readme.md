@@ -13,6 +13,7 @@ Currently it's based on:
 * Python with modules like requests, beautiful soup to scrap wordpress plugins site
 * Docker on Linux VM
 * OS functions like curl, unzip and grep - so it's mostly designed for linux systems for now
+* composer for psalm
 
 ### How to use
 

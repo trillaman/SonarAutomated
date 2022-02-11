@@ -1,5 +1,6 @@
 import argparse
 from sonar_module import SonarModule
+from psalm_module import PsalmModule
 from main_helper import *
 import os
 import sys
@@ -73,8 +74,14 @@ def main():
         sonar.run_docker_scan(project_dir, project_name)  # Sonar scanning run
 
     if argsdict['P'] is not None:
-        psalm_cmd = str(os.getenv('PSALM_BIN')) + "/psalm.phar --taint-analysis " + project_dir
-        os.system(psalm_cmd)
+        psalm = PsalmModule()  # Creating class instance for Psalm Scanning
+
+        psalm.download_composer(project_dir)
+        psalm.download_psalm_to_project(project_dir)
+        psalm.init_composer(project_dir)
+
+        psalm.run_psalm_scan(project_dir, project_name)
+
 
 
 if __name__ == "__main__":

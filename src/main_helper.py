@@ -1,6 +1,6 @@
 import os
 import platform
-
+import sys
 
 def get_proper_slashes():
     if platform.system() == 'Windows':
@@ -8,6 +8,14 @@ def get_proper_slashes():
     elif platform.system() == 'Linux':
         return "/"
 
+def check_output_exists(path):
+    try:
+        report_path = open(path, "w")
+    except Exception:
+        print("Can't open output file for reporting: " + path)
+        sys.exit()
+
+    return report_path
 
 def get_filename(filepath):
     filep = set_slashes(filepath)
