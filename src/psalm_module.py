@@ -44,7 +44,7 @@ class PsalmModule:
 
         return dl
 
-    def run_scan(self, p_dir, p_name):
+    def run_psalm_scan(self, p_dir, p_name):
         rep_file_path = os.path.abspath(p_dir + "/" + p_name + ".txt")
         rep_file = check_output_exists(rep_file_path)
 
