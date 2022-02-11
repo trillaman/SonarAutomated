@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 class PsalmModule:
     def init_composer(self, p_dir):
-        init_comp_cmd = "cd " + p_dir + " && " + "./psalm.phar --init"
+        init_comp_cmd = "cd " + p_dir + " && " + "./vendor/bin/psalm.phar --init"
         init = False
         try:
             os.system(init_comp_cmd)
@@ -20,7 +20,7 @@ class PsalmModule:
         return init
 
     def download_psalm_to_project(self, p_dir):
-        wget_cmd = "wget https://github.com/vimeo/psalm/releases/latest/download/psalm.phar -O " + str(p_dir)
+        wget_cmd = "cd " + p_dir + " && " + "wget https://github.com/vimeo/psalm/releases/latest/download/psalm.phar -O " + str(p_dir)
         downloaded = False
         try:
             os.system(wget_cmd)
@@ -48,8 +48,7 @@ class PsalmModule:
         rep_file_path = os.path.abspath(p_dir + "/" + p_name + ".txt")
         rep_file = check_output_exists(rep_file_path)
 
-        psalm_cmd = str(os.getenv(
-            'PSALM_BIN')) + "/psalm.phar --taint-analysis " + p_dir + " --report=" + rep_file  # Focus on security with --taint-analyis
+        psalm_cmd = "cd " + p_dir + " && " + " ./vendor/bin/psalm.phar --taint-analysis " + str(p_dir) + " --report=" + str(rep_file_path)  # Focus on security with --taint-analyis
 
         try:
             os.system(psalm_cmd)
