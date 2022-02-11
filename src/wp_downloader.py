@@ -120,7 +120,7 @@ class WP_Plugin_Downloader:
         try:
             os.system(dir_cmd)
         except Exception:
-            print("Failed to create list_of_folders.txt")
+            print("Failed to create list_of_folders. txt")
             sys.exit()
 
         return True

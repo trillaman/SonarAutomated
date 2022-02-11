@@ -1,12 +1,53 @@
 import os
 import platform
 import sys
+import sqlite3
+
+
+def close_db_connection():
+    con = get_db_connection()
+    con.close()
+    return True
+
+
+def get_db_connection():
+    try:
+        con = sqlite3.connect('scan.db')
+        print("Connected to db")
+    except Exception:
+        con = False
+        print("Can't connect to db")
+    return con
+
+
+def get_last_id():
+    con = get_db_connection()
+    if con is not False:
+        cursor = con.execute("SELECT MAX(ID) FROM scans")
+        for row in cursor:
+            max_id = row[0]
+
+    return max_id
+
+
+def insert_log_file(proj_name, report_path, scanning_tool):
+    con = get_db_connection()
+    if con is not False:
+        max_id = get_last_id()
+        sql_insert = "INSERT INTO scans (ID,PROJECT_NAME,REPORT_PATH,SCAN_TOOL) VALUES (" + max_id + "," + str(proj_name) + "," + str(report_path) + "," + str(scanning_tool) + ")"
+        con.execute(sql_insert)
+        con.commit()
+        print("Records created successfully")
+
+    return True
+
 
 def get_proper_slashes():
     if platform.system() == 'Windows':
         return "\\"
     elif platform.system() == 'Linux':
         return "/"
+
 
 def check_output_exists(path):
     try:
@@ -16,6 +57,7 @@ def check_output_exists(path):
         sys.exit()
 
     return report_path
+
 
 def get_filename(filepath):
     filep = set_slashes(filepath)

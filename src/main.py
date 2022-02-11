@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 def init_check():
     path_to_scans = str(os.getenv('WORKING_DIR') + "/scans")
     path_to_scans = set_slashes(path_to_scans)
@@ -82,6 +83,7 @@ def main():
 
         psalm.run_psalm_scan(project_dir, project_name)
 
+        close_db_connection()
 
 
 if __name__ == "__main__":
